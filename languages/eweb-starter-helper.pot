@@ -1,0 +1,192 @@
+# Copyright (C) 2026 Yisus Develop
+# This file is distributed under the same license as the EWEB - Starter Helper project.
+msgid ""
+msgstr ""
+"Project-Id-Version: EWEB - Starter Helper 1.1.0\n"
+"POT-Creation-Date: 2026-01-07 02:26:32+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Custom POT Generator\n"
+"X-Domain: eweb-starter-helper\n"
+
+#: /includes/class-eweb-sh-admin.php
+msgid "Crafted with ❤️ by %s"
+msgstr ""
+
+#: /includes/class-eweb-sh-admin.php
+msgid "Current Environment"
+msgstr ""
+
+#: /includes/class-eweb-sh-duplicator.php
+msgid "Duplicate this item"
+msgstr ""
+
+#: /includes/class-eweb-sh-duplicator.php
+msgid "Duplicate"
+msgstr ""
+
+#: /includes/class-eweb-sh-duplicator.php
+msgid "Insufficient parameters."
+msgstr ""
+
+#: /includes/class-eweb-sh-duplicator.php
+msgid "Security check failed."
+msgstr ""
+
+#: /includes/class-eweb-sh-duplicator.php
+msgid "Post does not exist."
+msgstr ""
+
+#: /includes/class-eweb-sh-duplicator.php
+msgid "%s (Copy)"
+msgstr ""
+
+#: /includes/class-eweb-sh-security.php
+msgid "Error: Invalid credentials."
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "EWEB Helper"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Feature Modules"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Global Data (Shortcodes)"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Company Name"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Agency Name"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Agency URL"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Enable Safe SVG Support"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Elementor Optimizations (Cleanup)"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Head Bloat Performance Optimizations"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Custom Branding (Login)"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Dynamic Shortcodes (Copyright/Year)"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Native Elementor Widget (Copyright)"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Master Duplicator (Post/Page/Elementor)"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Basic Security (Hide Version/XML-RPC)"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Dashboard Cleanup"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Environment Indicator (Admin Bar)"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Crafted with ❤️ by Yisus Develop"
+msgstr ""
+
+#: /includes/class-eweb-sh-settings.php
+msgid "Save Changes"
+msgstr ""
+
+#: /includes/class-eweb-sh-shortcodes.php
+msgid "Powered by %s"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "EWEB Copyright"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Content"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Prefix"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Copyright ©"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "e.g. Copyright ©"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Prefix Link"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "https://your-link.com"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Suffix"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Yisus Develop"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Your company name"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Suffix Link"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Alignment"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Left"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Center"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Right"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Style"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Text Color"
+msgstr ""
+
