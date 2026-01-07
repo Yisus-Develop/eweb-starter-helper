@@ -39,7 +39,7 @@ class EWEB_SH_Settings {
 	}
 
 	public function settings_init() {
-		register_setting( 'eweb_sh_group', $this->option_name );
+		register_setting( 'eweb_sh_group', $this->option_name, [ $this, 'sanitize_settings' ] );
 
 		// Section: Modules
 		add_settings_section(
@@ -113,12 +113,41 @@ class EWEB_SH_Settings {
 		];
 	}
 
+	public function get_defaults() {
+		$defaults = [
+			'company_name' => 'Enlaweb',
+			'agency_name'  => 'Yisus Develop',
+			'agency_url'   => 'https://enlaweb.co/',
+		];
+
+		foreach ( $this->get_modules_list() as $id => $label ) {
+			$defaults[ $id ] = '1';
+		}
+
+		return $defaults;
+	}
+
+	public function sanitize_settings( $input ) {
+		$output = get_option( $this->option_name, $this->get_defaults() );
+		$modules = $this->get_modules_list();
+
+		// Handle Text Fields
+		$output['company_name'] = sanitize_text_field( $input['company_name'] );
+		$output['agency_name']  = sanitize_text_field( $input['agency_name'] );
+		$output['agency_url']   = esc_url_raw( $input['agency_url'] );
+
+		// Handle Checkboxes (Modules)
+		foreach ( $modules as $id => $label ) {
+			$output[ $id ] = isset( $input[ $id ] ) ? '1' : '0';
+		}
+
+		return $output;
+	}
+
 	public function render_checkbox_field( $args ) {
-		$options = get_option( $this->option_name, [] );
+		$options = get_option( $this->option_name, $this->get_defaults() );
 		$id      = $args['id'];
-		
-		// DEFAULT ON if not set
-		$val = isset( $options[ $id ] ) ? $options[ $id ] : '1';
+		$val     = isset( $options[ $id ] ) ? $options[ $id ] : '0';
 		$checked = checked( $val, '1', false );
 
 		printf(
@@ -161,18 +190,12 @@ class EWEB_SH_Settings {
 	}
 
 	public function is_module_active( $module_id ) {
-		$options = get_option( $this->option_name, [] );
-		
-		// If option is not set locally, DEFAULT to true (1)
-		if ( ! isset( $options[ $module_id ] ) ) {
-			return true;
-		}
-
-		return '1' === $options[ $module_id ];
+		$options = get_option( $this->option_name, $this->get_defaults() );
+		return isset( $options[ $module_id ] ) && '1' === $options[ $module_id ];
 	}
 
 	public function get_setting( $key, $default = '' ) {
-		$options = get_option( $this->option_name, [] );
+		$options = get_option( $this->option_name, $this->get_defaults() );
 		return isset( $options[ $key ] ) ? $options[ $key ] : $default;
 	}
 }

@@ -3,7 +3,7 @@ Contributors: yisus-develop
 Tags: svg, elementor, optimization, security, branding
 Requires at least: 6.0
 Tested up to: 6.4
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,10 @@ This plugin provides a standardized "Starter Kit" for new WordPress installation
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 
 == Changelog ==
+
+= 1.1.3 =
+* Fix: Settings persistence issue for module checkboxes.
+* Fix: Default values for branding fields optimized.
 
 = 1.1.2 =
 * New: Ultra-flexible copyright fields in Elementor (Custom labels, between-year text, agency suffix).
