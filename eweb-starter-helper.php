@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EWEB - Starter Helper
  * Description: Essential initial setup for WordPress projects: Safe SVGs, Elementor cleanup, and performance optimizations.
- * Version: 1.0.0
+ * Version: 1.1.3
  * Author: Yisus Develop
  * Author URI: https://github.com/Yisus-Develop
  * License: GPL v2 or later
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants
-define( 'EWEB_SH_VERSION', '1.0.0' );
+define( 'EWEB_SH_VERSION', '1.1.3' );
 define( 'EWEB_SH_PATH', plugin_dir_path( __FILE__ ) );
 define( 'EWEB_SH_URL', plugin_dir_url( __FILE__ ) );
 
@@ -54,10 +54,17 @@ class EWEB_Starter_Helper {
 	 * Load required files
 	 */
 	private function includes() {
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-settings.php';
 		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-svg.php';
 		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-elementor.php';
 		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-optimization.php';
-		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-branding.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-shortcodes.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-duplicator.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-security.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-performance.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-admin.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-elementor-widgets.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-updater.php';
 	}
 
 	/**
@@ -66,11 +73,52 @@ class EWEB_Starter_Helper {
 	private function init_hooks() {
 		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
 		
-		// Initialize Components
-		EWEB_SH_SVG::get_instance();
-		EWEB_SH_Elementor::get_instance();
-		EWEB_SH_Optimization::get_instance();
-		EWEB_SH_Branding::get_instance();
+		$settings = EWEB_SH_Settings::get_instance();
+
+		// Initialize Components based on settings
+		if ( $settings->is_module_active( 'svg' ) ) {
+			EWEB_SH_SVG::get_instance();
+		}
+		
+		if ( $settings->is_module_active( 'elementor' ) ) {
+			EWEB_SH_Elementor::get_instance();
+		}
+
+		if ( $settings->is_module_active( 'optimization' ) ) {
+			EWEB_SH_Optimization::get_instance();
+		}
+
+		if ( $settings->is_module_active( 'optimization' ) ) {
+			EWEB_SH_Optimization::get_instance();
+		}
+
+		if ( $settings->is_module_active( 'shortcodes' ) ) {
+			EWEB_SH_Shortcodes::get_instance();
+		}
+
+		if ( $settings->is_module_active( 'elementor_widget' ) ) {
+			EWEB_SH_Elementor_Widgets::get_instance();
+		}
+
+		if ( $settings->is_module_active( 'duplicator' ) ) {
+			EWEB_SH_Duplicator::get_instance();
+		}
+
+		if ( $settings->is_module_active( 'security' ) ) {
+			EWEB_SH_Security::get_instance();
+		}
+
+		if ( $settings->is_module_active( 'performance' ) || $settings->is_module_active( 'optimization' ) ) {
+			EWEB_SH_Performance::get_instance();
+		}
+
+		// Admin UI module handles its own internal checks
+		EWEB_SH_Admin::get_instance();
+
+		// Initialize Update System
+		if ( is_admin() ) {
+			new EWEB_SH_Updater( __FILE__, 'Yisus-Develop', 'eweb-starter-helper' );
+		}
 	}
 
 	/**
