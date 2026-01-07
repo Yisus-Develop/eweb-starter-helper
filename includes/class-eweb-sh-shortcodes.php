@@ -23,6 +23,7 @@ class EWEB_SH_Shortcodes {
 	private function __construct() {
 		add_shortcode( 'eweb_copyright', [ $this, 'render_copyright' ] );
 		add_shortcode( 'eweb_year', [ $this, 'render_year' ] );
+		add_shortcode( 'eweb_copy_year', [ $this, 'render_copy_year' ] );
 	}
 
 	/**
@@ -38,6 +39,7 @@ class EWEB_SH_Shortcodes {
 		$settings = EWEB_SH_Settings::get_instance();
 		
 		$atts = shortcode_atts( [
+			'prefix'  => '',
 			'company' => $settings->get_setting( 'company_name', 'Enlaweb' ),
 			'agency'  => $settings->get_setting( 'agency_name', 'Yisus Develop' ),
 			'url'     => $settings->get_setting( 'agency_url', 'https://enlaweb.co/' ),
@@ -45,7 +47,7 @@ class EWEB_SH_Shortcodes {
 
 		$year = date( 'Y' );
 		
-		$output = '© ' . $year;
+		$output = esc_html( $atts['prefix'] ) . '© ' . $year;
 		
 		if ( ! empty( $atts['company'] ) ) {
 			$output .= ' ' . esc_html( $atts['company'] );
@@ -59,6 +61,14 @@ class EWEB_SH_Shortcodes {
 		}
 
 		return $output;
+	}
+
+	/**
+	 * Render [eweb_copy_year] shortcode
+	 * Returns: © 2026
+	 */
+	public function render_copy_year() {
+		return '© ' . date( 'Y' );
 	}
 
 	/**

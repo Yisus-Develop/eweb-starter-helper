@@ -90,6 +90,42 @@ class EWEB_SH_Copyright_Widget extends Widget_Base {
 		);
 
 		$this->add_control(
+			'show_symbol',
+			[
+				'label' => __( 'Show Symbol (©)', 'eweb-starter-helper' ),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __( 'Show', 'eweb-starter-helper' ),
+				'label_off' => __( 'Hide', 'eweb-starter-helper' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+
+		$this->add_control(
+			'show_year',
+			[
+				'label' => __( 'Show Current Year', 'eweb-starter-helper' ),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __( 'Show', 'eweb-starter-helper' ),
+				'label_off' => __( 'Hide', 'eweb-starter-helper' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+
+		$this->add_control(
+			'show_agency',
+			[
+				'label' => __( 'Show Agency Attribution', 'eweb-starter-helper' ),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __( 'Show', 'eweb-starter-helper' ),
+				'label_off' => __( 'Hide', 'eweb-starter-helper' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+
+		$this->add_control(
 			'align',
 			[
 				'label' => __( 'Alignment', 'eweb-starter-helper' ),
@@ -148,27 +184,51 @@ class EWEB_SH_Copyright_Widget extends Widget_Base {
 
 	protected function render() {
 		$settings = $this->get_settings_for_display();
+		$settings_global = EWEB_SH_Settings::get_instance();
 		$current_year = date( 'Y' );
 
 		echo '<div class="eweb-copyright-text">';
 		
 		// Prefix
-		if ( ! empty( $settings['prefix_link']['url'] ) ) {
-			$this->add_link_attributes( 'prefix_link', $settings['prefix_link'] );
-			echo '<a ' . $this->get_render_attribute_string( 'prefix_link' ) . ' class="eweb-copyright-link">' . esc_html( $settings['prefix'] ) . '</a>';
-		} else {
-			echo esc_html( $settings['prefix'] );
+		if ( ! empty( $settings['prefix'] ) ) {
+			if ( ! empty( $settings['prefix_link']['url'] ) ) {
+				$this->add_link_attributes( 'prefix_link', $settings['prefix_link'] );
+				echo '<a ' . $this->get_render_attribute_string( 'prefix_link' ) . ' class="eweb-copyright-link">' . esc_html( $settings['prefix'] ) . '</a>';
+			} else {
+				echo esc_html( $settings['prefix'] );
+			}
+			echo ' ';
+		}
+
+		// Symbol
+		if ( 'yes' === $settings['show_symbol'] ) {
+			echo '© ';
 		}
 
 		// Year
-		echo ' ' . $current_year . ' ';
+		if ( 'yes' === $settings['show_year'] ) {
+			echo $current_year . ' ';
+		}
 
 		// Suffix
-		if ( ! empty( $settings['suffix_link']['url'] ) ) {
-			$this->add_link_attributes( 'suffix_link', $settings['suffix_link'] );
-			echo '<a ' . $this->get_render_attribute_string( 'suffix_link' ) . ' class="eweb-copyright-link">' . esc_html( $settings['suffix'] ) . '</a>';
-		} else {
-			echo esc_html( $settings['suffix'] );
+		if ( ! empty( $settings['suffix'] ) ) {
+			if ( ! empty( $settings['suffix_link']['url'] ) ) {
+				$this->add_link_attributes( 'suffix_link', $settings['suffix_link'] );
+				echo '<a ' . $this->get_render_attribute_string( 'suffix_link' ) . ' class="eweb-copyright-link">' . esc_html( $settings['suffix'] ) . '</a>';
+			} else {
+				echo esc_html( $settings['suffix'] );
+			}
+		}
+
+		// Agency Attribution
+		if ( 'yes' === $settings['show_agency'] ) {
+			$agency_name = $settings_global->get_setting( 'agency_name', 'Yisus Develop' );
+			$agency_url = $settings_global->get_setting( 'agency_url', 'https://enlaweb.co/' );
+
+			echo sprintf( 
+				' | ' . __( 'Powered by %s', 'eweb-starter-helper' ), 
+				'<a href="' . esc_url( $agency_url ) . '" target="_blank" rel="noopener" class="eweb-copyright-link">' . esc_html( $agency_name ) . '</a>' 
+			);
 		}
 
 		echo '</div>';

@@ -2,8 +2,8 @@
 # This file is distributed under the same license as the EWEB - Starter Helper project.
 msgid ""
 msgstr ""
-"Project-Id-Version: EWEB - Starter Helper 1.1.0\n"
-"POT-Creation-Date: 2026-01-07 02:26:32+0100\n"
+"Project-Id-Version: EWEB - Starter Helper 1.1.1\n"
+"POT-Creation-Date: 2026-01-07 03:47:59+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -119,6 +119,7 @@ msgid "Save Changes"
 msgstr ""
 
 #: /includes/class-eweb-sh-shortcodes.php
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
 msgid "Powered by %s"
 msgstr ""
 
@@ -164,6 +165,26 @@ msgstr ""
 
 #: /includes/elementor/class-eweb-sh-copyright-widget.php
 msgid "Suffix Link"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Show Symbol (©)"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Show"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Hide"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Show Current Year"
+msgstr ""
+
+#: /includes/elementor/class-eweb-sh-copyright-widget.php
+msgid "Show Agency Attribution"
 msgstr ""
 
 #: /includes/elementor/class-eweb-sh-copyright-widget.php
