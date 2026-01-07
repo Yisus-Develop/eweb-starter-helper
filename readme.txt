@@ -3,7 +3,7 @@ Contributors: yisus-develop
 Tags: svg, elementor, optimization, security, branding
 Requires at least: 6.0
 Tested up to: 6.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,11 @@ This plugin provides a standardized "Starter Kit" for new WordPress installation
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 
 == Changelog ==
+
+= 1.1.2 =
+* New: Ultra-flexible copyright fields in Elementor (Custom labels, between-year text, agency suffix).
+* Improvement: Added `post_company` attribute to [eweb_copyright] shortcode.
+* Fix: Improved character-by-character control for complex copyright strings.
 
 = 1.1.1 =
 * Improvement: Granular controls in Elementor Copyright widget (Symbol/Year/Agency toggles).

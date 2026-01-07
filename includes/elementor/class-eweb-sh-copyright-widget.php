@@ -67,10 +67,22 @@ class EWEB_SH_Copyright_Widget extends Widget_Base {
 		$this->add_control(
 			'suffix',
 			[
-				'label' => __( 'Suffix', 'eweb-starter-helper' ),
+				'label' => __( 'Suffix (Company)', 'eweb-starter-helper' ),
 				'type' => Controls_Manager::TEXT,
-				'default' => $settings_global->get_setting( 'company_name', __( 'Yisus Develop', 'eweb-starter-helper' ) ),
 				'placeholder' => __( 'Your company name', 'eweb-starter-helper' ),
+				'dynamic' => [
+					'active' => true,
+				],
+			]
+		);
+
+		$this->add_control(
+			'middle_text',
+			[
+				'label' => __( 'Between Year & Company', 'eweb-starter-helper' ),
+				'type' => Controls_Manager::TEXT,
+				'placeholder' => __( 'e.g. - ', 'eweb-starter-helper' ),
+				'default' => ' ',
 			]
 		);
 
@@ -122,6 +134,25 @@ class EWEB_SH_Copyright_Widget extends Widget_Base {
 				'label_off' => __( 'Hide', 'eweb-starter-helper' ),
 				'return_value' => 'yes',
 				'default' => 'yes',
+			]
+		);
+
+		$this->add_control(
+			'agency_label',
+			[
+				'label' => __( 'Agency Label', 'eweb-starter-helper' ),
+				'type' => Controls_Manager::TEXT,
+				'placeholder' => __( 'Powered by', 'eweb-starter-helper' ),
+				'default' => '| Powered by',
+			]
+		);
+
+		$this->add_control(
+			'post_agency',
+			[
+				'label' => __( 'After Agency', 'eweb-starter-helper' ),
+				'type' => Controls_Manager::TEXT,
+				'placeholder' => __( 'e.g. - Agency Description', 'eweb-starter-helper' ),
 			]
 		);
 
@@ -207,10 +238,15 @@ class EWEB_SH_Copyright_Widget extends Widget_Base {
 
 		// Year
 		if ( 'yes' === $settings['show_year'] ) {
-			echo $current_year . ' ';
+			echo $current_year;
 		}
 
-		// Suffix
+		// Middle Text
+		if ( ! empty( $settings['middle_text'] ) ) {
+			echo esc_html( $settings['middle_text'] );
+		}
+
+		// Suffix (Company)
 		if ( ! empty( $settings['suffix'] ) ) {
 			if ( ! empty( $settings['suffix_link']['url'] ) ) {
 				$this->add_link_attributes( 'suffix_link', $settings['suffix_link'] );
@@ -224,9 +260,11 @@ class EWEB_SH_Copyright_Widget extends Widget_Base {
 		if ( 'yes' === $settings['show_agency'] ) {
 			$agency_name = $settings_global->get_setting( 'agency_name', 'Yisus Develop' );
 			$agency_url = $settings_global->get_setting( 'agency_url', 'https://enlaweb.co/' );
+			$agency_label = ! empty( $settings['agency_label'] ) ? $settings['agency_label'] : '| Powered by';
+			$post_agency = ! empty( $settings['post_agency'] ) ? ' ' . $settings['post_agency'] : '';
 
 			echo sprintf( 
-				' | ' . __( 'Powered by %s', 'eweb-starter-helper' ), 
+				' ' . esc_html( $agency_label ) . ' %s' . esc_html( $post_agency ), 
 				'<a href="' . esc_url( $agency_url ) . '" target="_blank" rel="noopener" class="eweb-copyright-link">' . esc_html( $agency_name ) . '</a>' 
 			);
 		}

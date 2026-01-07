@@ -39,10 +39,11 @@ class EWEB_SH_Shortcodes {
 		$settings = EWEB_SH_Settings::get_instance();
 		
 		$atts = shortcode_atts( [
-			'prefix'  => '',
-			'company' => $settings->get_setting( 'company_name', 'Enlaweb' ),
-			'agency'  => $settings->get_setting( 'agency_name', 'Yisus Develop' ),
-			'url'     => $settings->get_setting( 'agency_url', 'https://enlaweb.co/' ),
+			'prefix'       => '',
+			'company'      => $settings->get_setting( 'company_name', 'Enlaweb' ),
+			'post_company' => '',
+			'agency'       => $settings->get_setting( 'agency_name', 'Yisus Develop' ),
+			'url'          => $settings->get_setting( 'agency_url', 'https://enlaweb.co/' ),
 		], $atts );
 
 		$year = date( 'Y' );
@@ -51,6 +52,10 @@ class EWEB_SH_Shortcodes {
 		
 		if ( ! empty( $atts['company'] ) ) {
 			$output .= ' ' . esc_html( $atts['company'] );
+		}
+
+		if ( ! empty( $atts['post_company'] ) ) {
+			$output .= ' ' . esc_html( $atts['post_company'] );
 		}
 
 		if ( ! empty( $atts['agency'] ) ) {
