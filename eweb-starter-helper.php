@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EWEB - Starter Helper
  * Description: Essential initial setup for WordPress projects: Safe SVGs, Elementor cleanup, and performance optimizations.
- * Version: 1.1.3
+ * Version: 1.1.4
  * Author: Yisus Develop
  * Author URI: https://github.com/Yisus-Develop
  * License: GPL v2 or later
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants
-define( 'EWEB_SH_VERSION', '1.1.3' );
+define( 'EWEB_SH_VERSION', '1.1.4' );
 define( 'EWEB_SH_PATH', plugin_dir_path( __FILE__ ) );
 define( 'EWEB_SH_URL', plugin_dir_url( __FILE__ ) );
 
@@ -64,7 +64,7 @@ class EWEB_Starter_Helper {
 		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-performance.php';
 		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-admin.php';
 		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-elementor-widgets.php';
-		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-updater.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-github-updater.php';
 	}
 
 	/**
@@ -117,7 +117,7 @@ class EWEB_Starter_Helper {
 
 		// Initialize Update System
 		if ( is_admin() ) {
-			new EWEB_SH_Updater( __FILE__, 'Yisus-Develop', 'eweb-starter-helper' );
+			new EWEB_GitHub_Updater( __FILE__, 'Yisus-Develop', 'eweb-starter-helper' );
 		}
 	}
 
