@@ -202,6 +202,28 @@ class EWEB_SH_Copyright_Widget extends Widget_Base {
 			]
 		);
 
+		$this->add_control(
+			'link_color',
+			[
+				'label' => __( 'Link Color', 'eweb-starter-helper' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .eweb-copyright-link' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'link_hover_color',
+			[
+				'label' => __( 'Link Hover Color', 'eweb-starter-helper' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .eweb-copyright-link:hover' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			[
@@ -271,16 +293,13 @@ class EWEB_SH_Copyright_Widget extends Widget_Base {
 
 		echo '</div>';
 
-		// Add inline style for links to inherit text color by default but allow overriding
+		// Add inline style for links base behavior
 		?>
 		<style>
 			.eweb-copyright-text .eweb-copyright-link {
 				color: inherit;
 				text-decoration: none;
-				transition: opacity 0.3s;
-			}
-			.eweb-copyright-text .eweb-copyright-link:hover {
-				opacity: 0.8;
+				transition: all 0.3s ease;
 			}
 		</style>
 		<?php

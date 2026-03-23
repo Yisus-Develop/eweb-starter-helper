@@ -1,23 +1,26 @@
 <?php
 /**
- * Plugin Name: EWEB - Starter Helper
- * Description: Essential initial setup for WordPress projects: Safe SVGs, Elementor cleanup, and performance optimizations.
- * Version: 1.1.4
+ * Plugin Name: EWEB Core WebHelpers Pro
+ * Description: The professional Swiss Army Knife for WordPress. Modular collection of high-performance utilities, security enhancements, and development helpers. Part of the EWEB Plugin Suite.
+ * Version: 1.2.1
  * Author: Yisus Develop
  * Author URI: https://github.com/Yisus-Develop
+ * Plugin URI: https://enlaweb.co/
  * License: GPL v2 or later
  * Requires at least: 6.0
- * Requires PHP: 8.1+
+ * Requires PHP: 8.1
  * Text Domain: eweb-starter-helper
  * Domain Path: /languages
+ * 
+ * EWEB Core WebHelpers Pro - Developed by Yisus Develop
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+ if ( ! defined( 'ABSPATH' ) ) {
+ exit;
+ }
 
-// Define constants
-define( 'EWEB_SH_VERSION', '1.1.4' );
+ // Define constants
+ define( 'EWEB_SH_VERSION', '1.2.1' );
 define( 'EWEB_SH_PATH', plugin_dir_path( __FILE__ ) );
 define( 'EWEB_SH_URL', plugin_dir_url( __FILE__ ) );
 
