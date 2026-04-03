@@ -57,7 +57,7 @@ if ( ! class_exists( 'EWEB_GitHub_Updater' ) ) {
 
 			add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_update' ) );
 			add_filter( 'plugins_api', array( $this, 'get_info' ), 10, 3 );
-			add_filter( 'upgrader_post_install', array( $this, 'post_install' ), 10, 3 );
+			add_filter( 'upgrader_source_selection', array( $this, 'fix_folder_name' ), 10, 4 );
 		}
 
 		/**
@@ -165,20 +165,27 @@ if ( ! class_exists( 'EWEB_GitHub_Updater' ) ) {
 		}
 
 		/**
-		 * Cleanup after installation.
+		 * Fix folder name after update to prevent duplicate folders.
 		 *
-		 * @param bool  $true       True.
-		 * @param array $hook_extra Hook extra.
-		 * @param array $result     Result.
-		 * @return array
+		 * @param string      $source        Path to the temporary copy of the update.
+		 * @param string      $remote_source Remote source.
+		 * @param \WP_Upgrader $upgrader      Upgrader instance.
+		 * @param array       $hook_extra    Extra hook data.
+		 * @return string Correct source path.
 		 */
-		public function post_install( $true, $hook_extra, $result ) {
-			global $wp_filesystem;
-			$proper_destination = WP_PLUGIN_DIR . '/' . $this->config['proper_folder_name'];
-			$wp_filesystem->move( $result['destination'], $proper_destination );
-			$result['destination'] = $proper_destination;
+		public function fix_folder_name( $source, $remote_source, $upgrader, $hook_extra ) {
+			if ( ! isset( $hook_extra['plugin'] ) || $hook_extra['plugin'] !== $this->config['slug'] ) {
+				return $source;
+			}
 
-			return $result;
+			global $wp_filesystem;
+			$proper_destination = trailingslashit( $remote_source ) . $this->config['proper_folder_name'];
+
+			if ( $source !== $proper_destination ) {
+				$wp_filesystem->move( $source, $proper_destination );
+			}
+
+			return $proper_destination;
 		}
 	}
 }
