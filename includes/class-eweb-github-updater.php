@@ -145,11 +145,12 @@ if ( ! class_exists( 'EWEB_GitHub_Updater' ) ) {
 
 				// Add Icons and Banners Support.
 				$res->icons = array(
-					'default' => $this->config['raw_url'] . '/assets/icon.png',
+					'1x' => $this->config['raw_url'] . '/assets/icon-128x128.png',
+					'2x' => $this->config['raw_url'] . '/assets/icon-256x256.png',
 				);
 				$res->banners = array(
-					'low'  => $this->config['raw_url'] . '/assets/banner.png',
-					'high' => $this->config['raw_url'] . '/assets/banner.png',
+					'low'  => $this->config['raw_url'] . '/assets/banner-772x250.png',
+					'high' => $this->config['raw_url'] . '/assets/banner-1544x500.png',
 				);
 
 				return $res;
