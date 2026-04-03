@@ -1,0 +1,11 @@
+# WordPress GitIgnore
+.DS_Store
+Thumbs.db
+error_log
+wp-config.php
+node_modules/
+.vscode/
+.idea/
+*.log
+*.zip
+*.tar.gz
