@@ -135,13 +135,22 @@ if ( ! class_exists( 'EWEB_GitHub_Updater' ) ) {
 			$this->get_repository_info();
 
 			if ( $this->github_response ) {
-				$res              = new stdClass();
-				$res->name        = $this->config['proper_folder_name'];
-				$res->slug        = $this->config['slug'];
-				$res->version     = $this->github_response->tag_name;
-				$res->author      = 'Yisus Develop';
-				$res->homepage    = $this->config['github_url'];
+				$res                = new stdClass();
+				$res->name          = $this->config['proper_folder_name'];
+				$res->slug          = $this->config['slug'];
+				$res->version       = $this->github_response->tag_name;
+				$res->author        = 'Yisus Develop';
+				$res->homepage      = $this->config['github_url'];
 				$res->download_link = $this->config['zip_url'];
+
+				// Add Icons and Banners Support.
+				$res->icons = array(
+					'default' => $this->config['raw_url'] . '/assets/icon.png',
+				);
+				$res->banners = array(
+					'low'  => $this->config['raw_url'] . '/assets/banner.png',
+					'high' => $this->config['raw_url'] . '/assets/banner.png',
+				);
 
 				return $res;
 			}
