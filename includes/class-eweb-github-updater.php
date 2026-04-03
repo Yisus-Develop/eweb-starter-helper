@@ -143,6 +143,11 @@ if ( ! class_exists( 'EWEB_GitHub_Updater' ) ) {
 				$res->homepage      = $this->config['github_url'];
 				$res->download_link = $this->config['zip_url'];
 
+				// Compatibility info.
+				$res->tested       = '6.5'; // Last WordPress version.
+				$res->requires     = '6.0';
+				$res->requires_php = '8.1';
+
 				// Add Icons and Banners Support.
 				$res->icons = array(
 					'1x' => $this->config['raw_url'] . '/assets/icon-128x128.png',
