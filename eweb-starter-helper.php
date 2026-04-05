@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EWEB - Starter Helper
  * Description: Essential initial setup for WordPress projects: Safe SVGs, Elementor cleanup, and performance optimizations.
- * Version: 1.1.4
+ * Version: 1.1.8
  * Author: Yisus Develop
  * Author URI: https://github.com/Yisus-Develop
  * License: GPL v2 or later
@@ -10,30 +10,39 @@
  * Requires PHP: 8.1+
  * Text Domain: eweb-starter-helper
  * Domain Path: /languages
+ *
+ * @package EWEB_Starter_Helper
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Define constants
-define( 'EWEB_SH_VERSION', '1.1.4' );
-define( 'EWEB_SH_PATH', plugin_dir_path( __FILE__ ) );
-define( 'EWEB_SH_URL', plugin_dir_url( __FILE__ ) );
-
 /**
- * Main Plugin Class
+ * Main Plugin Class.
+ *
+ * Handles the core initialization and module loading for the suite.
  */
 class EWEB_Starter_Helper {
 
 	/**
+	 * Plugin version.
+	 *
+	 * @var string
+	 */
+	const VERSION = '1.1.8';
+
+	/**
 	 * Instance of this class.
-	 * @var EWEB_Starter_Helper
+	 *
+	 * @var EWEB_Starter_Helper|null
 	 */
 	private static $instance = null;
 
 	/**
-	 * Get instance of this class.
+	 * Get class instance.
+	 *
+	 * @return EWEB_Starter_Helper
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
@@ -43,97 +52,129 @@ class EWEB_Starter_Helper {
 	}
 
 	/**
-	 * Constructor
+	 * Constructor.
+	 *
+	 * Initializes constants, includes, and hooks.
 	 */
 	private function __construct() {
+		$this->define_constants();
 		$this->includes();
 		$this->init_hooks();
 	}
 
 	/**
-	 * Load required files
+	 * Define plugin constants.
+	 */
+	private function define_constants() {
+		if ( ! defined( 'EWEB_SH_VERSION' ) ) {
+			define( 'EWEB_SH_VERSION', self::VERSION );
+		}
+		if ( ! defined( 'EWEB_SH_PATH' ) ) {
+			define( 'EWEB_SH_PATH', plugin_dir_path( __FILE__ ) );
+		}
+		if ( ! defined( 'EWEB_SH_URL' ) ) {
+			define( 'EWEB_SH_URL', plugin_dir_url( __FILE__ ) );
+		}
+		if ( ! defined( 'EWEB_SH_BASENAME' ) ) {
+			define( 'EWEB_SH_BASENAME', plugin_basename( __FILE__ ) );
+		}
+	}
+
+	/**
+	 * Include required files.
 	 */
 	private function includes() {
+		// GitHub Updater - Shielded.
+		if ( ! class_exists( 'EWEB_GitHub_Updater' ) ) {
+			require_once EWEB_SH_PATH . 'includes/class-eweb-github-updater.php';
+		}
+
+		// Core Classes.
 		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-settings.php';
-		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-svg.php';
-		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-elementor.php';
-		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-optimization.php';
-		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-shortcodes.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-admin.php';
 		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-duplicator.php';
 		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-security.php';
 		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-performance.php';
-		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-admin.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-optimization.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-svg.php';
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-shortcodes.php';
+
+		// Elementor Integration.
+		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-elementor.php';
 		require_once EWEB_SH_PATH . 'includes/class-eweb-sh-elementor-widgets.php';
-		require_once EWEB_SH_PATH . 'includes/class-eweb-github-updater.php';
 	}
 
 	/**
-	 * Initialize hooks
+	 * Initialize hooks.
 	 */
 	private function init_hooks() {
-		add_action( 'plugins_loaded', [ $this, 'load_textdomain' ] );
-		
-		$settings = EWEB_SH_Settings::get_instance();
+		add_action( 'plugins_loaded', array( $this, 'init_updater' ) );
+		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
+		add_action( 'init', array( $this, 'initialize_modules' ) );
+	}
 
-		// Initialize Components based on settings
-		if ( $settings->is_module_active( 'svg' ) ) {
-			EWEB_SH_SVG::get_instance();
-		}
-		
-		if ( $settings->is_module_active( 'elementor' ) ) {
-			EWEB_SH_Elementor::get_instance();
-		}
-
-		if ( $settings->is_module_active( 'optimization' ) ) {
-			EWEB_SH_Optimization::get_instance();
-		}
-
-		if ( $settings->is_module_active( 'optimization' ) ) {
-			EWEB_SH_Optimization::get_instance();
-		}
-
-		if ( $settings->is_module_active( 'shortcodes' ) ) {
-			EWEB_SH_Shortcodes::get_instance();
-		}
-
-		if ( $settings->is_module_active( 'elementor_widget' ) ) {
-			EWEB_SH_Elementor_Widgets::get_instance();
-		}
-
-		if ( $settings->is_module_active( 'duplicator' ) ) {
-			EWEB_SH_Duplicator::get_instance();
-		}
-
-		if ( $settings->is_module_active( 'security' ) ) {
-			EWEB_SH_Security::get_instance();
-		}
-
-		if ( $settings->is_module_active( 'performance' ) || $settings->is_module_active( 'optimization' ) ) {
-			EWEB_SH_Performance::get_instance();
-		}
-
-		// Admin UI module handles its own internal checks
-		EWEB_SH_Admin::get_instance();
-
-		// Initialize Update System
-		if ( is_admin() ) {
-			new EWEB_GitHub_Updater( __FILE__, 'Yisus-Develop', 'eweb-starter-helper' );
+	/**
+	 * Initialize the GitHub Updater.
+	 */
+	public function init_updater() {
+		if ( is_admin() && class_exists( 'EWEB_GitHub_Updater' ) ) {
+			new EWEB_GitHub_Updater(
+				array(
+					'slug'               => EWEB_SH_BASENAME,
+					'proper_folder_name' => 'eweb-starter-helper',
+					'api_url'            => 'https://api.github.com/repos/Yisus-Develop/eweb-starter-helper',
+					'raw_url'            => 'https://raw.githubusercontent.com/Yisus-Develop/eweb-starter-helper/main',
+					'github_url'         => 'https://github.com/Yisus-Develop/eweb-starter-helper',
+					'zip_url'            => 'https://github.com/Yisus-Develop/eweb-starter-helper/archive/main.zip',
+					'sslverify'          => true,
+					'requires'           => '6.0',
+					'tested'             => '6.4',
+					'readme'             => 'readme.txt',
+					'access_token'       => '', // Optional.
+				)
+			);
 		}
 	}
 
 	/**
-	 * Load text domain for translations
+	 * Load translation files.
 	 */
 	public function load_textdomain() {
 		load_plugin_textdomain( 'eweb-starter-helper', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 	}
+
+	/**
+	 * Initialize all modules based on settings.
+	 */
+	public function initialize_modules() {
+		// Settings is always active as it's the core.
+		EWEB_SH_Settings::get_instance();
+
+		// Initialize only if active in settings or always active for core utility.
+		EWEB_SH_Admin::get_instance();
+		EWEB_SH_Duplicator::get_instance();
+		EWEB_SH_Security::get_instance();
+		EWEB_SH_Performance::get_instance();
+		EWEB_SH_Optimization::get_instance();
+		EWEB_SH_SVG::get_instance();
+		EWEB_SH_Shortcodes::get_instance();
+
+		// Conditional Elementor Init.
+		if ( did_action( 'elementor/loaded' ) ) {
+			EWEB_SH_Elementor::get_instance();
+			EWEB_SH_Elementor_Widgets::get_instance();
+		}
+	}
 }
 
 /**
- * Initialize the plugin
+ * Main instance helper.
+ *
+ * @return EWEB_Starter_Helper
  */
-function eweb_sh_init() {
+function eweb_sh() {
 	return EWEB_Starter_Helper::get_instance();
 }
 
-eweb_sh_init();
+// Global initialization.
+eweb_sh();

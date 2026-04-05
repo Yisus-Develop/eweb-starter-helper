@@ -1,6 +1,8 @@
 <?php
 /**
- * Shortcodes Class
+ * Global Shortcodes Module.
+ *
+ * Provides utility shortcodes like [eweb_year] for dynamic content.
  *
  * @package EWEB_Starter_Helper
  */
@@ -9,10 +11,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class EWEB_SH_Shortcodes
+ */
 class EWEB_SH_Shortcodes {
 
+	/**
+	 * Instance of this class.
+	 *
+	 * @var EWEB_SH_Shortcodes|null
+	 */
 	private static $instance = null;
 
+	/**
+	 * Get class instance.
+	 *
+	 * @return EWEB_SH_Shortcodes
+	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
@@ -20,67 +35,46 @@ class EWEB_SH_Shortcodes {
 		return self::$instance;
 	}
 
-	private function __construct() {
-		add_shortcode( 'eweb_copyright', [ $this, 'render_copyright' ] );
-		add_shortcode( 'eweb_year', [ $this, 'render_year' ] );
-		add_shortcode( 'eweb_copy_year', [ $this, 'render_copy_year' ] );
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		add_shortcode( 'eweb_year', array( $this, 'dynamic_year_shortcode' ) );
+		add_shortcode( 'eweb_copyright', array( $this, 'copyright_shortcode' ) );
 	}
 
 	/**
-	 * Render [eweb_copyright] shortcode
-	 * Attributes:
-	 * - company: Override default company name
-	 * - agency: Override default agency name
-	 * - url: Override default agency URL
-	 * 
-	 * Returns: © 2026 Company | Powered by Agency
+	 * Output current year.
+	 *
+	 * @return string
 	 */
-	public function render_copyright( $atts ) {
-		$settings = EWEB_SH_Settings::get_instance();
-		
-		$atts = shortcode_atts( [
-			'prefix'       => '',
-			'company'      => $settings->get_setting( 'company_name', 'Enlaweb' ),
-			'post_company' => '',
-			'agency'       => $settings->get_setting( 'agency_name', 'Yisus Develop' ),
-			'url'          => $settings->get_setting( 'agency_url', 'https://enlaweb.co/' ),
-		], $atts );
-
-		$year = date( 'Y' );
-		
-		$output = esc_html( $atts['prefix'] ) . '© ' . $year;
-		
-		if ( ! empty( $atts['company'] ) ) {
-			$output .= ' ' . esc_html( $atts['company'] );
-		}
-
-		if ( ! empty( $atts['post_company'] ) ) {
-			$output .= ' ' . esc_html( $atts['post_company'] );
-		}
-
-		if ( ! empty( $atts['agency'] ) ) {
-			$output .= sprintf( 
-				' | ' . __( 'Powered by %s', 'eweb-starter-helper' ), 
-				'<a href="' . esc_url( $atts['url'] ) . '" target="_blank" rel="noopener">' . esc_html( $atts['agency'] ) . '</a>' 
-			);
-		}
-
-		return $output;
+	public function dynamic_year_shortcode() {
+		return gmdate( 'Y' );
 	}
 
 	/**
-	 * Render [eweb_copy_year] shortcode
-	 * Returns: © 2026
+	 * Output a full copyright line.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string
 	 */
-	public function render_copy_year() {
-		return '© ' . date( 'Y' );
-	}
+	public function copyright_shortcode( $atts ) {
+		$args = shortcode_atts(
+			array(
+				'prefix' => 'Copyright',
+				'suffix' => 'All Rights Reserved.',
+			),
+			$atts,
+			'eweb_copyright'
+		);
 
-	/**
-	 * Render [eweb_year] shortcode
-	 * Returns: 2026
-	 */
-	public function render_year() {
-		return date( 'Y' );
+		return sprintf(
+			/* translators: 1: Prefix, 2: Year, 3: Site Name, 4: Suffix */
+			'%1$s &copy; %2$s %3$s. %4$s',
+			esc_html( $args['prefix'] ),
+			esc_html( gmdate( 'Y' ) ),
+			esc_html( get_bloginfo( 'name' ) ),
+			esc_html( $args['suffix'] )
+		);
 	}
 }

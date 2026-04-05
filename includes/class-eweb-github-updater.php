@@ -1,7 +1,10 @@
 <?php
 /**
- * Generic GitHub Update System for EWEB Plugins
- * Allows plugins to receive updates directly from a GitHub repository.
+ * EWEB GitHub Updater.
+ *
+ * Professional class to handle automatic updates from GitHub.
+ *
+ * @package EWEB_Starter_Helper
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,145 +13,179 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'EWEB_GitHub_Updater' ) ) {
 
+	/**
+	 * Class EWEB_GitHub_Updater
+	 */
 	class EWEB_GitHub_Updater {
 
-		private $file;
-		private $plugin_slug;
-		private $github_user;
-		private $github_repo;
+		/**
+		 * Config data.
+		 *
+		 * @var array
+		 */
+		private $config;
+
+		/**
+		 * GitHub response cache.
+		 *
+		 * @var object|null
+		 */
 		private $github_response;
-		private $plugin_data;
 
 		/**
-		 * Constructor
-		 * 
-		 * @param string $file Main plugin file path (__FILE__)
-		 * @param string $github_user GitHub username/org
-		 * @param string $github_repo GitHub repository name
+		 * Constructor.
+		 *
+		 * @param array $config Configuration array.
 		 */
-		public function __construct( $file, $github_user, $github_repo ) {
-			$this->file = $file;
-			$this->plugin_slug = plugin_basename( $file );
-			$this->github_user = $github_user;
-			$this->github_repo = $github_repo;
+		public function __construct( $config ) {
+			$this->config = wp_parse_args(
+				$config,
+				array(
+					'slug'               => '',
+					'proper_folder_name' => '',
+					'api_url'            => '',
+					'raw_url'            => '',
+					'github_url'         => '',
+					'zip_url'            => '',
+					'sslverify'          => true,
+					'requires'           => '6.0',
+					'tested'             => '6.4',
+					'readme'             => 'readme.txt',
+					'access_token'       => '',
+				)
+			);
 
-			add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'check_update' ] );
-			add_filter( 'plugins_api', [ $this, 'plugin_popup' ], 10, 3 );
-			add_filter( 'upgrader_post_install', [ $this, 'after_install' ], 10, 3 );
+			add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_update' ) );
+			add_filter( 'plugins_api', array( $this, 'get_info' ), 10, 3 );
+			add_filter( 'upgrader_source_selection', array( $this, 'fix_folder_name' ), 10, 4 );
 		}
 
 		/**
-		 * Lazy load plugin data
+		 * Connect to GitHub API.
 		 */
-		private function get_local_plugin_data() {
-			if ( null !== $this->plugin_data ) {
-				return $this->plugin_data;
+		private function get_repository_info() {
+			if ( null !== $this->github_response ) {
+				return;
 			}
 
-			if ( ! function_exists( 'get_plugin_data' ) ) {
-				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			$args = array(
+				'timeout'    => 15,
+				'sslverify'  => $this->config['sslverify'],
+			);
+
+			if ( ! empty( $this->config['access_token'] ) ) {
+				$args['headers'] = array(
+					'Authorization' => 'token ' . $this->config['access_token'],
+				);
 			}
 
-			$this->plugin_data = get_plugin_data( $this->file );
-			return $this->plugin_data;
+			$request = wp_remote_get( $this->config['api_url'] . '/releases/latest', $args );
+
+			if ( ! is_wp_error( $request ) ) {
+				$res = json_decode( wp_remote_retrieve_body( $request ) );
+				if ( is_object( $res ) ) {
+					$this->github_response = $res;
+				}
+			}
 		}
 
 		/**
-		 * Check for updates in GitHub
+		 * Check for updates in the transient.
+		 *
+		 * @param object $transient Transient object.
+		 * @return object
 		 */
 		public function check_update( $transient ) {
 			if ( empty( $transient->checked ) ) {
 				return $transient;
 			}
 
-			$remote = $this->get_github_data();
-			$local_data = $this->get_local_plugin_data();
+			$this->get_repository_info();
 
-			if ( $remote && isset( $remote->tag_name ) && version_compare( $local_data['Version'], $remote->tag_name, '<' ) ) {
-				$obj = new stdClass();
-				$obj->slug = dirname( $this->plugin_slug );
-				$obj->new_version = $remote->tag_name;
-				$obj->url = 'https://github.com/' . $this->github_user . '/' . $this->github_repo;
-				$obj->package = $remote->zipball_url;
+			if ( $this->github_response && version_compare( $this->github_response->tag_name, $transient->checked[ $this->config['slug'] ], '>' ) ) {
+				$obj              = new stdClass();
+				$obj->slug        = $this->config['slug'];
+				$obj->new_version = $this->github_response->tag_name;
+				$obj->url         = $this->config['github_url'];
+				$obj->package     = $this->config['zip_url'];
 
-				$transient->response[ $this->plugin_slug ] = $obj;
+				$transient->response[ $this->config['slug'] ] = $obj;
 			}
 
 			return $transient;
 		}
 
 		/**
-		 * Detailed information in the WordPress update popup
+		 * Get plugin info for the popup.
+		 *
+		 * @param bool|object $result Result.
+		 * @param string      $action Action.
+		 * @param object      $args   Args.
+		 * @return object|bool
 		 */
-		public function plugin_popup( $result, $action, $args ) {
-			$local_data = $this->get_local_plugin_data();
-			$plugin_dirname = dirname( $this->plugin_slug );
+		public function get_info( $result, $action, $args ) {
+			if ( 'query_plugins' !== $action && 'plugin_information' !== $action ) {
+				return false;
+			}
 
-			if ( $action !== 'plugin_information' || ! isset( $args->slug ) || $args->slug !== $plugin_dirname ) {
+			if ( $args->slug !== $this->config['slug'] ) {
 				return $result;
 			}
 
-			$remote = $this->get_github_data();
-			if ( ! $remote ) {
-				return $result;
+			$this->get_repository_info();
+
+			if ( $this->github_response ) {
+				$res                = new stdClass();
+				$res->name          = $this->config['proper_folder_name'];
+				$res->slug          = $this->config['slug'];
+				$res->version       = $this->github_response->tag_name;
+				$res->author        = 'Yisus Develop';
+				$res->homepage      = $this->config['github_url'];
+				$res->download_link = $this->config['zip_url'];
+
+				// Compatibility info.
+				$res->tested       = '6.5'; // Last WordPress version.
+				$res->requires     = '6.0';
+				$res->requires_php = '8.1';
+
+				// Add Icons and Banners Support.
+				$res->icons = array(
+					'1x' => $this->config['raw_url'] . '/assets/icon-128x128.png',
+					'2x' => $this->config['raw_url'] . '/assets/icon-256x256.png',
+				);
+				$res->banners = array(
+					'low'  => $this->config['raw_url'] . '/assets/banner-772x250.png',
+					'high' => $this->config['raw_url'] . '/assets/banner-1544x500.png',
+				);
+
+				return $res;
 			}
 
-			$res = new stdClass();
-			$res->name = $local_data['Name'];
-			$res->slug = $plugin_dirname;
-			$res->version = $remote->tag_name;
-			$res->author = $local_data['Author'];
-			$res->homepage = $local_data['PluginURI'];
-			$res->download_link = $remote->zipball_url;
-			$res->sections = [
-				'description' => $local_data['Description'],
-				'changelog'   => $remote->body,
-			];
-
-			return $res;
-		}
-
-		/**
-		 * Post-install cleanup: Ensure the folder name is correct
-		 */
-		public function after_install( $response, $hook_extra, $result ) {
-			global $wp_filesystem;
-			$install_directory = plugin_dir_path( $this->file );
-			$wp_filesystem->move( $result['destination'], $install_directory );
-			$result['destination'] = $install_directory;
 			return $result;
 		}
 
 		/**
-		 * Fetch data from GitHub Releases API
+		 * Fix folder name after update to prevent duplicate folders.
+		 *
+		 * @param string      $source        Path to the temporary copy of the update.
+		 * @param string      $remote_source Remote source.
+		 * @param \WP_Upgrader $upgrader      Upgrader instance.
+		 * @param array       $hook_extra    Extra hook data.
+		 * @return string Correct source path.
 		 */
-		private function get_github_data() {
-			if ( ! empty( $this->github_response ) ) {
-				return $this->github_response;
+		public function fix_folder_name( $source, $remote_source, $upgrader, $hook_extra ) {
+			if ( ! isset( $hook_extra['plugin'] ) || $hook_extra['plugin'] !== $this->config['slug'] ) {
+				return $source;
 			}
 
-			$url = "https://api.github.com/repos/{$this->github_user}/{$this->github_repo}/releases/latest";
-			
-			$args = [
-				'timeout' => 15,
-				'headers' => [
-					'Accept' => 'application/vnd.github.v3+json',
-				],
-			];
+			global $wp_filesystem;
+			$proper_destination = trailingslashit( $remote_source ) . $this->config['proper_folder_name'];
 
-			$response = wp_remote_get( $url, $args );
-
-			if ( is_wp_error( $response ) ) {
-				return false;
+			if ( $source !== $proper_destination ) {
+				$wp_filesystem->move( $source, $proper_destination );
 			}
 
-			$code = wp_remote_retrieve_response_code( $response );
-			if ( 404 === $code ) {
-				return false; // Silencioso si no hay releases o el repo es privado
-			}
-
-			$this->github_response = json_decode( wp_remote_retrieve_body( $response ) );
-			return $this->github_response;
+			return $proper_destination;
 		}
 	}
 }

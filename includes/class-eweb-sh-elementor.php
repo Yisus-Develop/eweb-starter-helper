@@ -1,16 +1,33 @@
 <?php
 /**
- * Elementor Cleanup Component
+ * Elementor Integration Module.
+ *
+ * Handles general Elementor cleanups and optimizations.
+ *
+ * @package EWEB_Starter_Helper
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class EWEB_SH_Elementor
+ */
 class EWEB_SH_Elementor {
 
+	/**
+	 * Instance of this class.
+	 *
+	 * @var EWEB_SH_Elementor|null
+	 */
 	private static $instance = null;
 
+	/**
+	 * Get class instance.
+	 *
+	 * @return EWEB_SH_Elementor
+	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
@@ -18,16 +35,19 @@ class EWEB_SH_Elementor {
 		return self::$instance;
 	}
 
-	private function __construct() {
-		// Disable Elementor default colors and fonts
-		add_action( 'after_setup_theme', [ $this, 'disable_elementor_defaults' ] );
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		if ( EWEB_SH_Settings::is_module_active( 'elementor' ) ) {
+			add_action( 'wp_enqueue_scripts', array( $this, 'remove_elementor_unused_scripts' ), 999 );
+		}
 	}
 
 	/**
-	 * Disable Elementor default colors and fonts
+	 * Remove unnecessary Elementor scripts and styles.
 	 */
-	public function disable_elementor_defaults() {
-		update_option( 'elementor_disable_color_schemes', 'yes' );
-		update_option( 'elementor_disable_typography_schemes', 'yes' );
+	public function remove_elementor_unused_scripts() {
+		wp_dequeue_style( 'elementor-icons' );
 	}
 }

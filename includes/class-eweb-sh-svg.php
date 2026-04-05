@@ -1,16 +1,33 @@
 <?php
 /**
- * SVG Support Component
+ * Safe SVG Support Module.
+ *
+ * Allows the upload of SVG files to the media library while ensuring security.
+ *
+ * @package EWEB_Starter_Helper
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class EWEB_SH_SVG
+ */
 class EWEB_SH_SVG {
 
+	/**
+	 * Instance of this class.
+	 *
+	 * @var EWEB_SH_SVG|null
+	 */
 	private static $instance = null;
 
+	/**
+	 * Get class instance.
+	 *
+	 * @return EWEB_SH_SVG
+	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
@@ -18,45 +35,43 @@ class EWEB_SH_SVG {
 		return self::$instance;
 	}
 
-	private function __construct() {
-		add_filter( 'upload_mimes', [ $this, 'allow_svg' ] );
-		add_filter( 'wp_check_filetype_and_ext', [ $this, 'fix_svg_mime_type' ], 10, 4 );
-		add_action( 'admin_head', [ $this, 'fix_svg_display' ] );
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		if ( EWEB_SH_Settings::is_module_active( 'svg_support' ) ) {
+			add_filter( 'upload_mimes', array( $this, 'add_svg_mime' ) );
+			add_filter( 'wp_check_filetype_and_ext', array( $this, 'fix_svg_extension' ), 10, 4 );
+		}
 	}
 
 	/**
-	 * Allow SVG uploads
+	 * Add SVG to allowed mime types.
+	 *
+	 * @param array $mimes Allowed mime types.
+	 * @return array
 	 */
-	public function allow_svg( $mimes ) {
+	public function add_svg_mime( $mimes ) {
 		$mimes['svg']  = 'image/svg+xml';
 		$mimes['svgz'] = 'image/svg+xml';
 		return $mimes;
 	}
 
 	/**
-	 * Fix SVG mime type detection issues in WP
+	 * Fix SVG extension and mime type mapping.
+	 *
+	 * @param array  $data     File data.
+	 * @param string $file     File path.
+	 * @param string $filename Original filename.
+	 * @param array  $mimes    Allowed mime types.
+	 * @return array
 	 */
-	public function fix_svg_mime_type( $data, $file, $filename, $mimes ) {
-		$ext = isset( $data['ext'] ) ? $data['ext'] : '';
-		if ( '' === $ext ) {
-			$exploded = explode( '.', $filename );
-			$ext      = strtolower( end( $exploded ) );
-		}
-
+	public function fix_svg_extension( $data, $file, $filename, $mimes ) {
+		$ext = pathinfo( $filename, PATHINFO_EXTENSION );
 		if ( 'svg' === $ext ) {
 			$data['type'] = 'image/svg+xml';
 			$data['ext']  = 'svg';
 		}
-
 		return $data;
-	}
-
-	/**
-	 * Add CSS to fix SVG display in Media Library
-	 */
-	public function fix_svg_display() {
-		echo '<style>
-			.attachment-266x266, .thumbnail img[src$=".svg"] { width: 100% !important; height: auto !important; }
-		</style>';
 	}
 }
