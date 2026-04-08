@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EWEB - Starter Helper
  * Description: Essential initial setup for WordPress projects: Safe SVGs, Elementor cleanup, and performance optimizations.
- * Version: 1.1.8
+ * Version: 1.1.9
  * Author: Yisus Develop
  * Author URI: https://github.com/Yisus-Develop
  * License: GPL v2 or later
@@ -30,7 +30,7 @@ class EWEB_Starter_Helper {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.1.8';
+	const VERSION = '1.1.9';
 
 	/**
 	 * Instance of this class.
@@ -69,6 +69,9 @@ class EWEB_Starter_Helper {
 		if ( ! defined( 'EWEB_SH_VERSION' ) ) {
 			define( 'EWEB_SH_VERSION', self::VERSION );
 		}
+		if ( ! defined( 'EWEB_SH_FILE' ) ) {
+			define( 'EWEB_SH_FILE', __FILE__ );
+		}
 		if ( ! defined( 'EWEB_SH_PATH' ) ) {
 			define( 'EWEB_SH_PATH', plugin_dir_path( __FILE__ ) );
 		}
@@ -84,7 +87,7 @@ class EWEB_Starter_Helper {
 	 * Include required files.
 	 */
 	private function includes() {
-		// GitHub Updater - Shielded.
+		// GitHub Updater - Elite Deployment System.
 		if ( ! class_exists( 'EWEB_GitHub_Updater' ) ) {
 			require_once EWEB_SH_PATH . 'includes/class-eweb-github-updater.php';
 		}
@@ -114,24 +117,14 @@ class EWEB_Starter_Helper {
 	}
 
 	/**
-	 * Initialize the GitHub Updater.
+	 * Initialize the GitHub Updater with Elite Standards.
 	 */
 	public function init_updater() {
 		if ( is_admin() && class_exists( 'EWEB_GitHub_Updater' ) ) {
 			new EWEB_GitHub_Updater(
-				array(
-					'slug'               => EWEB_SH_BASENAME,
-					'proper_folder_name' => 'eweb-starter-helper',
-					'api_url'            => 'https://api.github.com/repos/Yisus-Develop/eweb-starter-helper',
-					'raw_url'            => 'https://raw.githubusercontent.com/Yisus-Develop/eweb-starter-helper/main',
-					'github_url'         => 'https://github.com/Yisus-Develop/eweb-starter-helper',
-					'zip_url'            => 'https://github.com/Yisus-Develop/eweb-starter-helper/archive/main.zip',
-					'sslverify'          => true,
-					'requires'           => '6.0',
-					'tested'             => '6.4',
-					'readme'             => 'readme.txt',
-					'access_token'       => '', // Optional.
-				)
+				EWEB_SH_FILE,
+				'Yisus-Develop',
+				'eweb-starter-helper'
 			);
 		}
 	}
