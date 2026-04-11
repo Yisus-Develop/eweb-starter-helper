@@ -74,7 +74,7 @@ class EWEB_SH_Settings {
 			'eweb_sh_section_general',
 			esc_html__( 'Module Management', 'eweb-starter-helper' ),
 			function () {
-				echo '<p>' . esc_html__( 'Activate or deactivate the essential modules for your project.', 'eweb-starter-helper' ) . '</p>';
+				echo '<p>' . esc_html__( 'Activate or deactivate the core modules for your project.', 'eweb-starter-helper' ) . '</p>';
 			},
 			'eweb-starter-helper'
 		);
@@ -101,7 +101,7 @@ class EWEB_SH_Settings {
 			'eweb_sh_section_optimization',
 			esc_html__( 'Performance & Security', 'eweb-starter-helper' ),
 			function () {
-				echo '<p>' . esc_html__( 'Configure low-level optimizations.', 'eweb-starter-helper' ) . '</p>';
+				echo '<p>' . esc_html__( 'Configure advanced optimizations and technical protocols.', 'eweb-starter-helper' ) . '</p>';
 			},
 			'eweb-starter-helper'
 		);
@@ -114,6 +114,42 @@ class EWEB_SH_Settings {
 			'eweb_sh_section_optimization',
 			array(
 				'id'      => 'disable_emojis',
+				'section' => 'optimization',
+			)
+		);
+
+		add_settings_field(
+			'brave_fix',
+			esc_html__( 'Brave & Mobile Rendering', 'eweb-starter-helper' ),
+			array( $this, 'render_checkbox_field' ),
+			'eweb-starter-helper',
+			'eweb_sh_section_optimization',
+			array(
+				'id'      => 'brave_fix',
+				'section' => 'optimization',
+			)
+		);
+
+		add_settings_field(
+			'cache_bridge',
+			esc_html__( 'Cache Optimization Bridge', 'eweb-starter-helper' ),
+			array( $this, 'render_checkbox_field' ),
+			'eweb-starter-helper',
+			'eweb_sh_section_optimization',
+			array(
+				'id'      => 'cache_bridge',
+				'section' => 'optimization',
+			)
+		);
+
+		add_settings_field(
+			'elementor_stability',
+			esc_html__( 'Elementor Stability Protocols', 'eweb-starter-helper' ),
+			array( $this, 'render_checkbox_field' ),
+			'eweb-starter-helper',
+			'eweb_sh_section_optimization',
+			array(
+				'id'      => 'elementor_stability',
 				'section' => 'optimization',
 			)
 		);
@@ -197,13 +233,24 @@ class EWEB_SH_Settings {
 	}
 
 	/**
-	 * Check if a module is active.
+	 * Check if a module or setting is active.
+	 *
+	 * @param string $id Setting ID.
+	 * @param string $section Section ID (modules or optimization).
+	 * @return bool
+	 */
+	public static function is_active( $id, $section = 'modules' ) {
+		$options = get_option( 'eweb_sh_settings', array() );
+		return isset( $options[ $section ][ $id ] ) && '1' === $options[ $section ][ $id ];
+	}
+
+	/**
+	 * Check if a module is active (legacy helper).
 	 *
 	 * @param string $module Module ID.
 	 * @return bool
 	 */
 	public static function is_module_active( $module ) {
-		$options = get_option( 'eweb_sh_settings', array() );
-		return isset( $options['modules'][ $module ] ) && '1' === $options['modules'][ $module ];
+		return self::is_active( $module, 'modules' );
 	}
 }

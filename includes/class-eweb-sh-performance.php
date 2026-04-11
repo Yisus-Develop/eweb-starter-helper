@@ -2,7 +2,7 @@
 /**
  * Performance Optimization Module.
  *
- * Disables unnecessary WordPress features to improve page load speed.
+ * Handles hardware acceleration, cache bridges, and feature disabling.
  *
  * @package EWEB_Starter_Helper
  */
@@ -39,17 +39,29 @@ class EWEB_SH_Performance {
 	 * Constructor.
 	 */
 	public function __construct() {
-		if ( EWEB_SH_Settings::is_module_active( 'disable_emojis' ) ) {
+		// Standard Optimizations.
+		if ( EWEB_SH_Settings::is_active( 'disable_emojis', 'optimization' ) ) {
 			$this->disable_emojis();
 		}
+
 		add_action( 'init', array( $this, 'disable_embeds' ), 9999 );
 		add_action( 'init', array( $this, 'heartbeat_control' ), 1 );
 
-		// Advanced Rendering & Cache Bridges.
-		add_action( 'wp_head', array( $this, 'hardware_acceleration_css' ), 1 );
-		add_filter( 'rocket_delay_js_exclusions', array( $this, 'wp_rocket_exclusions' ) );
-		add_filter( 'rocket_exclude_js', array( $this, 'wp_rocket_exclusions' ) );
-		add_action( 'init', array( $this, 'elementor_stability_checks' ) );
+		// Advanced Rendering (Brave/Mobile).
+		if ( EWEB_SH_Settings::is_active( 'brave_fix', 'optimization' ) ) {
+			add_action( 'wp_head', array( $this, 'hardware_acceleration_css' ), 1 );
+		}
+
+		// Cache Plugin Bridge.
+		if ( EWEB_SH_Settings::is_active( 'cache_bridge', 'optimization' ) ) {
+			add_filter( 'rocket_delay_js_exclusions', array( $this, 'wp_rocket_exclusions' ) );
+			add_filter( 'rocket_exclude_js', array( $this, 'wp_rocket_exclusions' ) );
+		}
+
+		// Elementor Stability.
+		if ( EWEB_SH_Settings::is_active( 'elementor_stability', 'optimization' ) ) {
+			add_action( 'init', array( $this, 'elementor_stability_checks' ) );
+		}
 	}
 
 	/**
@@ -99,7 +111,7 @@ class EWEB_SH_Performance {
 
 	/**
 	 * Disable emojis in the front-end and admin.
-	...
+	 */
 	private function disable_emojis() {
 		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
