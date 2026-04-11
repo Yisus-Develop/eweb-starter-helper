@@ -4,7 +4,7 @@ Tags: svg, elementor, optimization, security, branding
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.1+
-Stable tag: 1.1.9
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,7 +17,7 @@ This plugin provides a standardized "Starter Kit" for new WordPress installation
 * **Safe SVG Support:** Enables SVG uploads with MIME type detection and admin display fixes.
 * **Elementor Widget & Optimizations:** Native "EWEB Copyright" widget with full styling and dynamic year.
 * **Master Duplicator:** Single-click duplication for Posts, Pages, and Elementor Templates.
-* **Elite Security Hardening:** Anti-enumeration, XML-RPC protection, and sensitive file blocking.
+* **Security Hardening:** Anti-enumeration, XML-RPC protection, and sensitive file blocking.
 * **Agency Branding:** Custom login branding and agency attribution settings.
 
 == Installation ==
@@ -27,9 +27,14 @@ This plugin provides a standardized "Starter Kit" for new WordPress installation
 
 == Changelog ==
 
+= 1.2.0 =
+* Clean: Removed informal comments and standardized technical documentation.
+* Improvement: Professionalized update engine protocols.
+* Security: Hardened file access controls and security headers.
+
 = 1.1.9 =
-* New: Elite Security Hardening module (Anti-Enumeration, Footprint Removal).
-* New: Elite Deployment System (Pro Elements style GitHub Updater).
+* New: Security Hardening module (Anti-Enumeration, Footprint Removal).
+* New: Automatic Update System via GitHub.
 * Improvement: Standardized constants and metadata for PHP 8.1+.
 * Clean: Removed development overhead and legacy files.
 

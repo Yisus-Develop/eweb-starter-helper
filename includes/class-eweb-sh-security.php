@@ -46,7 +46,7 @@ class EWEB_SH_Security {
 			add_filter( 'xmlrpc_enabled', '__return_false' );
 			add_filter( 'xmlrpc_methods', array( $this, 'remove_xmlrpc_pingback_ping' ) );
 
-			// Anti-Enumeration & Footprint Removal (Elite Standard).
+			// Anti-Enumeration Anti-Enumeration & Footprint Removal (Elite Standard) Footprint Removal.
 			add_filter( 'rest_endpoints', array( $this, 'block_rest_user_enumeration' ) );
 			remove_action( 'wp_head', 'wp_generator' );
 			add_filter( 'the_generator', '__return_empty_string' );

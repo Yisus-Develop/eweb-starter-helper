@@ -1,9 +1,9 @@
 <?php
 /**
- * EWEB GitHub Updater - Elite Deployment System.
+ * EWEB GitHub Updater - Professional Deployment System.
  *
  * Professional class to handle automatic updates from GitHub.
- * Follows industry standards for folder mapping (Pro Elements logic).
+ * Follows industry standards for folder mapping (professional protocols).
  *
  * @package EWEB_Starter_Helper
  */
