@@ -44,11 +44,62 @@ class EWEB_SH_Performance {
 		}
 		add_action( 'init', array( $this, 'disable_embeds' ), 9999 );
 		add_action( 'init', array( $this, 'heartbeat_control' ), 1 );
+
+		// Advanced Rendering & Cache Bridges.
+		add_action( 'wp_head', array( $this, 'hardware_acceleration_css' ), 1 );
+		add_filter( 'rocket_delay_js_exclusions', array( $this, 'wp_rocket_exclusions' ) );
+		add_filter( 'rocket_exclude_js', array( $this, 'wp_rocket_exclusions' ) );
+		add_action( 'init', array( $this, 'elementor_stability_checks' ) );
+	}
+
+	/**
+	 * Inject hardware acceleration CSS for mobile and Brave compatibility.
+	 */
+	public function hardware_acceleration_css() {
+		echo '<style>
+			/* Hardware Acceleration for smooth rendering */
+			.banner-anim, .mc-hero__inner, .mc-hero__title span, .u-title-reveal span {
+				-webkit-backface-visibility: hidden;
+				backface-visibility: hidden;
+				-webkit-transform: translateZ(0);
+				transform: translateZ(0);
+			}
+			/* Fix for Elementor shape dividers white lines */
+			.elementor-shape-bottom svg {
+				filter: drop-shadow(0px -1px 0px inherit);
+			}
+		</style>';
+	}
+
+	/**
+	 * Exclude critical animation scripts from WP Rocket delay/optimization.
+	 *
+	 * @param array $exclusions Array of exclusions.
+	 * @return array
+	 */
+	public function wp_rocket_exclusions( $exclusions ) {
+		$critical_scripts = array(
+			'gsap',
+			'ScrollTrigger',
+			'swiper',
+			'elementor/assets/lib/swiper',
+		);
+		return array_merge( (array) $exclusions, $critical_scripts );
+	}
+
+	/**
+	 * Disable Elementor features that often cause rendering issues.
+	 */
+	public function elementor_stability_checks() {
+		if ( did_action( 'elementor/loaded' ) ) {
+			update_option( 'elementor_optimized_css_loading', 'no' );
+			update_option( 'elementor_improved_asset_loading', 'no' );
+		}
 	}
 
 	/**
 	 * Disable emojis in the front-end and admin.
-	 */
+	...
 	private function disable_emojis() {
 		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );

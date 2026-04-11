@@ -46,13 +46,24 @@ class EWEB_SH_Security {
 			add_filter( 'xmlrpc_enabled', '__return_false' );
 			add_filter( 'xmlrpc_methods', array( $this, 'remove_xmlrpc_pingback_ping' ) );
 
-			// Anti-Enumeration Anti-Enumeration & Footprint Removal (Elite Standard) Footprint Removal.
+			// Anti-Enumeration & Footprint Removal.
 			add_filter( 'rest_endpoints', array( $this, 'block_rest_user_enumeration' ) );
+			add_action( 'template_redirect', array( $this, 'block_author_enumeration' ) );
 			remove_action( 'wp_head', 'wp_generator' );
 			add_filter( 'the_generator', '__return_empty_string' );
 
 			// Secondary Layer Protection for sensitive files.
 			add_action( 'init', array( $this, 'block_sensitive_files_access' ) );
+		}
+	}
+
+	/**
+	 * Block user enumeration via ?author=N.
+	 */
+	public function block_author_enumeration() {
+		if ( is_author() || ( isset( $_GET['author'] ) && $_GET['author'] ) ) {
+			wp_safe_redirect( home_url(), 301 );
+			exit;
 		}
 	}
 

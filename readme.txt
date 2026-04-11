@@ -4,7 +4,7 @@ Tags: svg, elementor, optimization, security, branding
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.1+
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,12 @@ This plugin provides a standardized "Starter Kit" for new WordPress installation
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 
 == Changelog ==
+
+= 1.3.0 =
+* New: Security Shield integration (Author enumeration blocking).
+* New: Advanced Rendering (Hardware acceleration for Brave and Mobile).
+* New: WP Rocket Bridge (Automatic exclusions for GSAP and Swiper).
+* Improvement: Elementor stability protocols implemented.
 
 = 1.2.0 =
 * Clean: Removed informal comments and standardized technical documentation.
