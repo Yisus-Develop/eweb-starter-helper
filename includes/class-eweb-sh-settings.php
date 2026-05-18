@@ -153,6 +153,52 @@ class EWEB_SH_Settings {
 				'section' => 'optimization',
 			)
 		);
+
+		// Global data section for dynamic copyright values.
+		add_settings_section(
+			'eweb_sh_section_data',
+			esc_html__( 'Global Data (Shortcodes)', 'eweb-starter-helper' ),
+			function () {
+				echo '<p>' . esc_html__( 'Default values for copyright shortcodes and widget.', 'eweb-starter-helper' ) . '</p>';
+			},
+			'eweb-starter-helper'
+		);
+
+		add_settings_field(
+			'company_name',
+			esc_html__( 'Company Name', 'eweb-starter-helper' ),
+			array( $this, 'render_text_field' ),
+			'eweb-starter-helper',
+			'eweb_sh_section_data',
+			array(
+				'id'          => 'company_name',
+				'placeholder' => 'Enlaweb',
+			)
+		);
+
+		add_settings_field(
+			'agency_name',
+			esc_html__( 'Agency Name', 'eweb-starter-helper' ),
+			array( $this, 'render_text_field' ),
+			'eweb-starter-helper',
+			'eweb_sh_section_data',
+			array(
+				'id'          => 'agency_name',
+				'placeholder' => 'Yisus Develop',
+			)
+		);
+
+		add_settings_field(
+			'agency_url',
+			esc_html__( 'Agency URL', 'eweb-starter-helper' ),
+			array( $this, 'render_text_field' ),
+			'eweb-starter-helper',
+			'eweb_sh_section_data',
+			array(
+				'id'          => 'agency_url',
+				'placeholder' => 'https://enlaweb.co/',
+			)
+		);
 	}
 
 	/**
@@ -184,11 +230,31 @@ class EWEB_SH_Settings {
 						$output[ $key ][ $sub_key ] = ( '1' === $sub_val ) ? '1' : '0';
 					}
 				} else {
-					$output[ $key ] = sanitize_text_field( $value );
+					$output[ $key ] = ( 'agency_url' === $key ) ? esc_url_raw( $value ) : sanitize_text_field( $value );
 				}
 			}
 		}
 		return $output;
+	}
+
+	/**
+	 * Render a text input field.
+	 *
+	 * @param array $args Field args.
+	 */
+	public function render_text_field( $args ) {
+		$options     = get_option( $this->option_name, array() );
+		$id          = $args['id'];
+		$val         = isset( $options[ $id ] ) ? $options[ $id ] : '';
+		$placeholder = isset( $args['placeholder'] ) ? $args['placeholder'] : '';
+
+		printf(
+			'<input type="text" name="%s[%s]" value="%s" class="regular-text" placeholder="%s" />',
+			esc_attr( $this->option_name ),
+			esc_attr( $id ),
+			esc_attr( $val ),
+			esc_attr( $placeholder )
+		);
 	}
 
 	/**
@@ -252,5 +318,17 @@ class EWEB_SH_Settings {
 	 */
 	public static function is_module_active( $module ) {
 		return self::is_active( $module, 'modules' );
+	}
+
+	/**
+	 * Get a top-level setting value.
+	 *
+	 * @param string $key Setting key.
+	 * @param string $default Default value.
+	 * @return string
+	 */
+	public function get_setting( $key, $default = '' ) {
+		$options = get_option( $this->option_name, array() );
+		return isset( $options[ $key ] ) && '' !== $options[ $key ] ? $options[ $key ] : $default;
 	}
 }
